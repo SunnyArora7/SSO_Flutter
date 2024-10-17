@@ -39,6 +39,7 @@ class LoginService {
       //     loginController.emailController.value.text);
       // PreferenceManager.setData(
       //     PreferenceManager.keyPASS, loginController.passController.value.text);
+      // test
       Get.offAllNamed(PageRouteConstant.home);
     } else {
       Get.dialog(ErrorDialog(
