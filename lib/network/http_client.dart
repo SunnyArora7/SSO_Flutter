@@ -77,7 +77,7 @@ class HttpClient {
 
       case 200:
         var decode = json.decode(response.body);
-        switch (decode['statusCode']) {
+        switch (response.statusCode) {
           case 500:
             {
               ErrorDialog.showErrorDialog(

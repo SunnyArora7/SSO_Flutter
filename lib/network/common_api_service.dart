@@ -26,4 +26,10 @@ class CommonApiService {
       Map<dynamic, dynamic> loginReqBody) async {
     return _httpClient.postRequest(ApiEndpoints.microsoft, body: loginReqBody);
   }
+
+  Future<http.Response> getHomeData() async {
+    return _httpClient.getRequest(
+      ApiEndpoints.homeData
+    );
+  }
 }

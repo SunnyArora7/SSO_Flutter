@@ -181,8 +181,11 @@ class _LoginPageState extends State<LoginPage> {
               PrimaryButton(
                   onPressed: () async {
                     //LoginService().signInWithMicrosoft(context);
+
                     await LoginService().azureSignInApi(true, context);
-                    LoginService().loginApiWithMicrosoft();
+                    if (loginController.microsoftToken.value != "") {
+                      LoginService().loginApiWithMicrosoft();
+                    }
                   },
                   context: context,
                   child: Text("Login with Microsoft",

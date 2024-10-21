@@ -10,6 +10,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../common/widget/error_dialog/error_dialog.dart';
 import '../../main.dart';
 import '../../network/common_api_service.dart';
+import '../../utils/preference_manager.dart';
+import '../../utils/utils.dart';
 import '../controller/login_controller.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,17 +31,12 @@ class LoginService {
   loginApi() async {
     final response = await CommonApiService().login({
       "username": loginController.emailController.value.text,
-      "password": loginController.passController.value.text,
+      "password": loginController.passController.value.text
     });
     if (response.statusCode == 200) {
-      // var loginResp = json.decode(response.body);
-
-      // PreferenceManager.setData(PreferenceManager.token, loginResp.token);
-      // PreferenceManager.setData(PreferenceManager.keyNAME,
-      //     loginController.emailController.value.text);
-      // PreferenceManager.setData(
-      //     PreferenceManager.keyPASS, loginController.passController.value.text);
-      // test
+      var loginResp = json.decode(response.body);
+      PreferenceManager.setData(PreferenceManager.token, loginResp['access']);
+      saveData(loginResp['access']);
       Get.offAllNamed(PageRouteConstant.home);
     } else {
       Get.dialog(ErrorDialog(
@@ -78,7 +75,9 @@ class LoginService {
     });
     print(response.statusCode);
     if (response.statusCode == 200) {
-      print('success success success');
+      var loginResp = json.decode(response.body);
+      PreferenceManager.setData(PreferenceManager.token, loginResp['access']);
+      saveData(loginResp['access']);
       Get.offAllNamed(PageRouteConstant.home);
     } else {
       Get.dialog(ErrorDialog(
@@ -106,7 +105,6 @@ class LoginService {
   //     } else {
   //       result = await auth.signInWithProvider(provider);
   //     }
-  //
   //     if (result != null) {
   //       final String? accessToken = result?.credential?.accessToken;
   //       if (accessToken != null) {
@@ -129,7 +127,8 @@ class LoginService {
     final result = await oauth.login();
 
     result.fold(
-      (l) => showError("Microsoft Authentication Failed!", context),
+      (l) => print("Microsoft Authentication Failed!"),
+      //showError("Microsoft Authentication Failed!", context),
       (r) async {
         final accessToken = r.accessToken; // Get the access token
         if (accessToken != null) {
@@ -139,7 +138,8 @@ class LoginService {
           print(loginController.microsoftToken.value);
           print(userDetails);
         } else {
-          showError("Failed to retrieve access token.", context);
+          print("Failed to retrieve access token.");
+          //showError("Failed to retrieve access token.", context);
         }
       },
     );
@@ -179,7 +179,9 @@ class LoginService {
     });
     print(response.statusCode);
     if (response.statusCode == 200) {
-      print('success success success');
+      var loginResp = json.decode(response.body);
+      PreferenceManager.setData(PreferenceManager.token, loginResp['access']);
+      saveData(loginResp['access']);
       Get.offAllNamed(PageRouteConstant.home);
     } else {
       Get.dialog(ErrorDialog(
@@ -187,6 +189,15 @@ class LoginService {
           onPressed: () {
             Get.back();
           }));
+    }
+  }
+
+  void whereToGo() async {
+    var isToken = PreferenceManager.getString(PreferenceManager.token);
+    if (isToken == null || isToken == "" || isToken == "null") {
+      Get.offNamed(PageRouteConstant.login);
+    } else {
+      Get.offNamed(PageRouteConstant.home);
     }
   }
 }

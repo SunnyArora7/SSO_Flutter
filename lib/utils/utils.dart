@@ -1,7 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/services.dart';
+import 'package:sso/utils/preference_manager.dart';
+
+import '../page_routes/page_route_constant.dart';
 
 Logger log = Logger();
 
@@ -119,4 +125,18 @@ bool isCarrierAvailable(int? carrier) {
     return true;
   }
   return false;
+}
+
+saveData(String token) {
+  List<String> split = token.split('.');
+  String norString = base64Url.normalize(split[1]);
+  String payload = utf8.decode(base64Url.decode(norString));
+  Map<String, dynamic> decode = json.decode(payload);
+
+  print("jkljojlkjlkjlkjlkjlk");
+  print(decode[PreferenceManager.name]);
+  print(decode[PreferenceManager.id]);
+  PreferenceManager.setData(
+      PreferenceManager.name, decode[PreferenceManager.name]);
+  PreferenceManager.setData(PreferenceManager.id, decode[PreferenceManager.id]);
 }
